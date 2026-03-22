@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootballDB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#" class="logo" data-view="home">⚽ Football<span>DB</span></a>
+            <nav class="nav" id="nav">
+                <a href="#" class="nav-link active" data-view="home">Strona główna</a>
+                <a href="#" class="nav-link" data-view="players">Zawodnicy</a>
+                <a href="#" class="nav-link" data-view="favorites">Ulubieni (<span id="fav-count">0</span>)</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- STRONA GŁÓWNA -->
+        <section class="view active" id="view-home">
+            <div class="hero">
+                <h1>Baza piłkarzy ⚽</h1>
+                <p>Wyszukaj zawodnika i sprawdź jego dane</p>
+                <div class="search-box">
+                    <input type="text" id="hero-search" placeholder="Wpisz nazwisko...">
+                    <button id="hero-search-btn">Szukaj</button>
+                </div>
+            </div>
+
+            <h2>Popularni zawodnicy</h2>
+            <div class="grid" id="popular-grid"></div>
+        </section>
+
+        <!-- LISTA ZAWODNIKÓW -->
+        <section class="view" id="view-players">
+            <h1>Zawodnicy</h1>
+
+            <div class="filters">
+                <input type="text" id="search" placeholder="Szukaj...">
+                <select id="filter-position">
+                    <option value="">Wszystkie pozycje</option>
+                    <option value="Goalkeeper">Bramkarz</option>
+                    <option value="Defender">Obrońca</option>
+                    <option value="Midfielder">Pomocnik</option>
+                    <option value="Forward">Napastnik</option>
+                </select>
+                <select id="sort">
+                    <option value="name">Nazwa A-Z</option>
+                    <option value="value">Wartość ↓</option>
+                    <option value="age">Wiek ↑</option>
+                </select>
+            </div>
+
+            <p id="results-info"></p>
+            <div class="grid" id="players-grid"></div>
+        </section>
+
+        <!-- SZCZEGÓŁY ZAWODNIKA -->
+        <section class="view" id="view-detail">
+            <button class="back-btn" data-view="players">← Wróć</button>
+            <div class="detail-card" id="detail-card"></div>
+        </section>
+
+        <!-- ULUBIENI -->
+        <section class="view" id="view-favorites">
+            <h1>⭐ Ulubieni</h1>
+            <div class="grid" id="favorites-grid"></div>
+            <p id="fav-empty" class="empty-msg">Brak ulubionych. Dodaj kogoś!</p>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 FootballDB - Projekt zaliczeniowy</p>
+    </footer>
+
+    <script src="app.js"></script> 
+</body>
+</html>
