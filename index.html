@@ -54,8 +54,11 @@
                 </select>
                 <select id="sort">
                     <option value="name">Nazwa A-Z</option>
+                    <option value="name2">Nazwa Z-A</option>
                     <option value="value">Wartość ↓</option>
-                    <option value="age">Wiek ↑</option>
+                    <option value="value2">Wartość ↑</option>
+                    <option value="age">Wiek ↓</option>
+                    <option value="age2">Wiek ↑</option>
                 </select>
             </div>
 
@@ -66,7 +69,42 @@
         <!-- SZCZEGÓŁY ZAWODNIKA -->
         <section class="view" id="view-detail">
             <button class="back-btn" data-view="players">← Wróć</button>
-            <div class="detail-card" id="detail-card"></div>
+            <div class="detail-card" id="detail-card">
+                <div class="detail-header">
+                    <div class="detail-photo">
+                        <img src="" alt="Zawodnik">
+                    </div>
+                    <div class="detail-info">
+                        <h2>Robert Lewandowski</h2>
+                        <p><strong>Pozycja:</strong> Napastnik</p>
+                        <p><strong>Wiek:</strong> 36</p>
+                        <p><strong>Klub:</strong> FC Barcelona</p>
+                        <p><strong>Wartość rynkowa:</strong> €15 mln</p>
+                    </div>
+                </div>
+
+                <div class="detail-stats">
+                    <h3>Statystyki sezonu</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-number">28</span>
+                            <span class="stat-label">Mecze</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">19</span>
+                            <span class="stat-label">Gole</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">6</span>
+                            <span class="stat-label">Asysty</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">7.4</span>
+                            <span class="stat-label">Śr. ocena</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- ULUBIENI -->
@@ -79,9 +117,8 @@
     </main>
 
     <footer class="footer">
-        <p>© 2025 FootballDB - Projekt zaliczeniowy</p>
+        <p>© 2026 FootballDB - Projekt zaliczeniowy</p>
     </footer>
 
-    <script src="app.js"></script> 
 </body>
 </html>
