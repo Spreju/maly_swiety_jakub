@@ -1,124 +1,189 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootballDB</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FootballDB</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
 
-    <header class="header">
-        <div class="container header-inner">
-            <a href="#" class="logo" data-view="home">⚽ Football<span>DB</span></a>
-            <nav class="nav" id="nav">
-                <a href="#" class="nav-link active" data-view="home">Strona główna</a>
-                <a href="#" class="nav-link" data-view="players">Zawodnicy</a>
-                <a href="#" class="nav-link" data-view="favorites">Ulubieni (<span id="fav-count">0</span>)</a>
-            </nav>
-            <button class="hamburger" id="hamburger" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </header>
+    <body>
 
-    <main class="container">
-
-        <!-- STRONA GŁÓWNA -->
-        <section class="view active" id="view-home">
-            <div class="hero">
-                <h1>Baza piłkarzy ⚽</h1>
-                <p>Wyszukaj zawodnika i sprawdź jego dane</p>
-                <div class="search-box">
-                    <input type="text" id="hero-search" placeholder="Wpisz nazwisko...">
-                    <button id="hero-search-btn">Szukaj</button>
-                </div>
+        <header class="header">
+            <div class="container header-inner">
+                <a href="#" class="logo" data-view="home">⚽ Football<span>DB</span></a>
+                <nav class="nav" id="nav">
+                    <a href="#" class="nav-link active" data-view="home">Strona główna</a>
+                    <a href="#" class="nav-link" data-view="players">Zawodnicy</a>
+                    <a href="#" class="nav-link" data-view="favorites">Ulubieni (<span id="fav-count">0</span>)</a>
+                    <a href="#" class="nav-link" data-view="detail">Szczegóły zawodnika</a>
+                </nav>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
+        </header>
 
-            <h2>Popularni zawodnicy</h2>
-            <div class="grid" id="popular-grid"></div>
-        </section>
+        <main class="container">
 
-        <!-- LISTA ZAWODNIKÓW -->
-        <section class="view" id="view-players">
-            <h1>Zawodnicy</h1>
-
-            <div class="filters">
-                <input type="text" id="search" placeholder="Szukaj...">
-                <select id="filter-position">
-                    <option value="">Wszystkie pozycje</option>
-                    <option value="Goalkeeper">Bramkarz</option>
-                    <option value="Defender">Obrońca</option>
-                    <option value="Midfielder">Pomocnik</option>
-                    <option value="Forward">Napastnik</option>
-                </select>
-                <select id="sort">
-                    <option value="name">Nazwa A-Z</option>
-                    <option value="name2">Nazwa Z-A</option>
-                    <option value="value">Wartość ↓</option>
-                    <option value="value2">Wartość ↑</option>
-                    <option value="age">Wiek ↓</option>
-                    <option value="age2">Wiek ↑</option>
-                </select>
-            </div>
-
-            <p id="results-info"></p>
-            <div class="grid" id="players-grid"></div>
-        </section>
-
-        <!-- SZCZEGÓŁY ZAWODNIKA -->
-        <section class="view" id="view-detail">
-            <button class="back-btn" data-view="players">← Wróć</button>
-            <div class="detail-card" id="detail-card">
-                <div class="detail-header">
-                    <div class="detail-photo">
-                        <img src="" alt="Zawodnik">
-                    </div>
-                    <div class="detail-info">
-                        <h2>Robert Lewandowski</h2>
-                        <p><strong>Pozycja:</strong> Napastnik</p>
-                        <p><strong>Wiek:</strong> 36</p>
-                        <p><strong>Klub:</strong> FC Barcelona</p>
-                        <p><strong>Wartość rynkowa:</strong> €15 mln</p>
+            <!-- STRONA GŁÓWNA -->
+            <section class="view active" id="view-home">
+                <div class="hero">
+                    <h1>Baza piłkarzy ⚽</h1>
+                    <p>Wyszukaj zawodnika i sprawdź jego dane</p>
+                    <div class="search-box">
+                        <input type="text" id="hero-search" placeholder="Wpisz nazwisko...">
+                        <button id="hero-search-btn">Szukaj</button>
                     </div>
                 </div>
 
-                <div class="detail-stats">
-                    <h3>Statystyki sezonu</h3>
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <span class="stat-number">28</span>
-                            <span class="stat-label">Mecze</span>
+                <h2>Popularni zawodnicy</h2>
+                <div class="grid" id="popular-grid"></div>
+            </section>
+
+            <!-- LISTA ZAWODNIKÓW -->
+            <section class="view" id="view-players">
+                <h1>Zawodnicy</h1>
+
+                <div class="filters">
+                    <input type="text" id="search" placeholder="Szukaj...">
+                    <select id="filter-position">
+                        <option value="">Wszystkie pozycje</option>
+                        <option value="Goalkeeper">Bramkarz</option>
+                        <option value="Defender">Obrońca</option>
+                        <option value="Midfielder">Pomocnik</option>
+                        <option value="Forward">Napastnik</option>
+                    </select>
+                    <select id="sort">
+                        <option value="name">Nazwa A-Z</option>
+                        <option value="name2">Nazwa Z-A</option>
+                        <option value="value">Wartość ↓</option>
+                        <option value="value2">Wartość ↑</option>
+                        <option value="age">Wiek ↓</option>
+                        <option value="age2">Wiek ↑</option>
+                    </select>
+                </div>
+
+                <p id="results-info"></p>
+                <div class="grid" id="players-grid"></div>
+            </section>
+
+            <!-- SZCZEGÓŁY ZAWODNIKA -->
+            <section class="view" id="view-detail">
+                <button class="back-btn" data-view="players">← Wróć</button>
+                <div class="detail-card" id="detail-card">
+                    <div class="detail-header">
+                        <div class="detail-photo">
+                            <img src="" alt="Zawodnik">
                         </div>
-                        <div class="stat-box">
-                            <span class="stat-number">19</span>
-                            <span class="stat-label">Gole</span>
+                        <div class="detail-info">
+                            <h2>Robert Lewandowski</h2>
+                            <p><strong>Pozycja:</strong> Napastnik</p>
+                            <p><strong>Wiek:</strong> 36</p>
+                            <p><strong>Klub:</strong> FC Barcelona</p>
+                            <p><strong>Wartość rynkowa:</strong> €15 mln</p>
                         </div>
-                        <div class="stat-box">
-                            <span class="stat-number">6</span>
-                            <span class="stat-label">Asysty</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-number">7.4</span>
-                            <span class="stat-label">Śr. ocena</span>
+                    </div>
+
+                    <div class="detail-stats">
+                        <h3>Statystyki sezonu</h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-number">28</span>
+                                <span class="stat-label">Mecze</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-number">19</span>
+                                <span class="stat-label">Gole</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-number">6</span>
+                                <span class="stat-label">Asysty</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-number">7.4</span>
+                                <span class="stat-label">Śr. ocena</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- ULUBIENI -->
-        <section class="view" id="view-favorites">
-            <h1>⭐ Ulubieni</h1>
-            <div class="grid" id="favorites-grid"></div>
-            <p id="fav-empty" class="empty-msg">Brak ulubionych. Dodaj kogoś!</p>
-        </section>
+            <!-- ULUBIENI -->
+            <section class="view" id="view-favorites">
+                <h1>⭐ Ulubieni</h1>
+                <div class="grid" id="favorites-grid"></div>
+                <p id="fav-empty" class="empty-msg">Brak ulubionych. Dodaj kogoś!</p>
+            </section>
 
-    </main>
+        </main>
 
-    <footer class="footer">
-        <p>© 2026 FootballDB - Projekt zaliczeniowy</p>
-    </footer>
+        <footer class="footer">
+            <p>© 2026 FootballDB - Projekt zaliczeniowy</p>
+        </footer>
+        <script>
+            const views = document.querySelectorAll(".view");
+            const navLinks = document.querySelectorAll(".nav-link");
+            const logo = document.querySelector(".logo");
+            const backButtons = document.querySelectorAll("[data-view]");
+            const hamburger = document.getElementById("hamburger");
+            const nav = document.getElementById("nav");
 
-</body>
+            // === FUNKCJA ZMIANY WIDOKU ===
+            function changeView(viewName) {
+
+                // ukrycie wszystkich widoków
+                views.forEach(view => {
+                    view.classList.remove("active");
+                });
+
+                // pokazanie wybranego widoku
+                const targetView = document.getElementById("view-" + viewName);
+                if (targetView) {
+                    targetView.classList.add("active");
+                }
+
+                // aktualizacja aktywnej nawigacji
+                navLinks.forEach(link => {
+                    link.classList.remove("active");
+                    if (link.dataset.view === viewName) {
+                        link.classList.add("active");
+                    }
+                });
+
+                // zamknięcie mobile menu
+                nav.classList.remove("open");
+                hamburger.classList.remove("open");
+            }
+
+            // === OBSŁUGA NAV LINKÓW ===
+            navLinks.forEach(link => {
+                link.addEventListener("click", e => {
+                    e.preventDefault();
+                    changeView(link.dataset.view);
+                });
+            });
+
+            // === LOGO ===
+            logo.addEventListener("click", e => {
+                e.preventDefault();
+                changeView("home");
+            });
+
+            // === PRZYCISKI Z data-view ===
+            backButtons.forEach(btn => {
+                btn.addEventListener("click", e => {
+                    e.preventDefault();
+                    const view = btn.dataset.view;
+                    if (view) changeView(view);
+                });
+            });
+
+            // === HAMBURGER ===
+            hamburger.addEventListener("click", () => {
+                nav.classList.toggle("open");
+                hamburger.classList.toggle("open");
+            });
+        </script>
+    </body>
 </html>
