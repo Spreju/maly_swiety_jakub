@@ -324,7 +324,7 @@ button {
     color: #8b949e;
 }
 
-/* STATYSTYKI */
+/* === STATYSTYKI === */
 .detail-stats h3 {
     margin-bottom: 1rem;
 }
@@ -353,4 +353,79 @@ button {
 .stat-label {
     font-size: 0.8rem;
     color: #8b949e;
+}
+
+/* === LISTA ZAWODNIKÓW === */
+
+.players-list {
+    margin-top: 1.5rem;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.player-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 80px 120px 120px;
+    gap: 1rem;
+    align-items: center;
+
+    padding: 1rem;
+
+    background: #161b22;
+
+    border-bottom: 1px solid #30363d;
+
+    transition: background 0.2s;
+}
+
+.player-row:hover {
+    background: #1c2333;
+}
+
+.player-row.header {
+    background: #0d1117;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.player-name {
+    font-weight: 600;
+}
+
+.player-club {
+    color: #8b949e;
+}
+
+.player-value {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.details-link {
+    padding: 0.5rem 0.8rem;
+    border: none;
+    border-radius: 8px;
+    background: #4caf50;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.details-link:hover {
+    background: #388e3c;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    .player-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .player-row.header {
+        display: none;
+    }
 }

@@ -16,7 +16,6 @@
                     <a href="#" class="nav-link active" data-view="home">Strona główna</a>
                     <a href="#" class="nav-link" data-view="players">Zawodnicy</a>
                     <a href="#" class="nav-link" data-view="favorites">Ulubieni (<span id="fav-count">0</span>)</a>
-                    <a href="#" class="nav-link" data-view="detail">Szczegóły zawodnika</a>
                 </nav>
                 <button class="hamburger" id="hamburger" aria-label="Menu">
                     <span></span><span></span><span></span>
@@ -65,7 +64,7 @@
                 </div>
 
                 <p id="results-info"></p>
-                <div class="grid" id="players-grid"></div>
+                <div class="players-list" id="players-list"></div>
             </section>
 
             <!-- SZCZEGÓŁY ZAWODNIKA -->
@@ -121,6 +120,8 @@
         <footer class="footer">
             <p>© 2026 FootballDB - Projekt zaliczeniowy</p>
         </footer>
+        <script src="api.js"></script>
+        <script src="dynamic.js"></script>
         <script>
             const views = document.querySelectorAll(".view");
             const navLinks = document.querySelectorAll(".nav-link");
