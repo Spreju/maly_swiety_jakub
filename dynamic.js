@@ -1,113 +1,214 @@
 'use strict';
 
-// lista zawodników
-const playersList = document.getElementById("players-list");
+// ======================================
+// Konfiguracja aplikacji
+// ======================================
 
-// input wyszukiwania
-const searchInput = document.getElementById("search");
+const API_KEY = '54f7ebf2d5b93c24ba949c932130a794';
+const API_SEASON = 2024;
+const STORAGE_KEY = 'favorites';
 
-// select pozycji
-const positionFilter = document.getElementById("filter-position");
-
-// select sortowania
-const sortSelect = document.getElementById("sort");
-
-// miejsce gdzie pokazujemy ilość wyników
-const resultsInfo = document.getElementById("results-info");
-
-// tutaj będziemy trzymać zawodników pobranych z API
-let apiPlayers = [];
-
-// ta zmienna mówi, z jakiej listy aktualnie korzystamy:
-// na początku używamy lokalnej tablicy players z api.js
-let currentPlayers = players;
-
-const API_KEY = "54f7ebf2d5b93c24ba949c932130a794";
+const POSITION_TRANSLATIONS = {
+    Attacker: 'Napastnik',
+    Midfielder: 'Pomocnik',
+    Defender: 'Obrońca',
+    Goalkeeper: 'Bramkarz'
+};
 
 // ======================================
-// FUNKCJA WYŚWIETLAJĄCA ZAWODNIKÓW
+// Elementy DOM
+// ======================================
+
+const elements = {
+    loader: document.getElementById('loader'),
+    resultsInfo: document.getElementById('results-info'),
+
+    views: document.querySelectorAll('.view'),
+    navLinks: document.querySelectorAll('.nav-link'),
+    logo: document.querySelector('.logo'),
+    hamburger: document.getElementById('hamburger'),
+    nav: document.getElementById('nav'),
+    viewButtons: document.querySelectorAll('[data-view]'),
+
+    playersList: document.getElementById('players-list'),
+    searchInput: document.getElementById('search'),
+    positionFilter: document.getElementById('filter-position'),
+    sortSelect: document.getElementById('sort'),
+
+    heroSearchInput: document.getElementById('hero-search'),
+    heroSearchButton: document.getElementById('hero-search-btn'),
+    heroLeagueSelect: document.getElementById('hero-league'),
+
+    favoritesGrid: document.getElementById('favorites-grid'),
+    favCount: document.getElementById('fav-count'),
+    favEmpty: document.getElementById('fav-empty'),
+    popularGrid: document.getElementById('popular-grid'),
+    detailCard: document.getElementById('detail-card')
+};
+
+// ======================================
+// Stan aplikacji
+// ======================================
+
+let apiPlayers = [];
+let currentPlayers = players;
+let favorites = loadFavorites();
+
+// ======================================
+// Funkcje pomocnicze
+// ======================================
+
+function loadFavorites() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+function saveFavorites() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+}
+
+function updateFavCount() {
+    elements.favCount.textContent = favorites.length;
+}
+
+// Brak danych oznaczamy myślnikiem, ale realne 0 zostaje jako 0.
+function showValue(value) {
+    return value === null || value === undefined ? '-' : value;
+}
+
+function isMissingValue(value) {
+    return value === '-' || value === null || value === undefined || value === '';
+}
+
+function toNumber(value) {
+    return Number(value);
+}
+
+function compareNumbers(a, b, field, ascending = true) {
+    const aValue = a[field];
+    const bValue = b[field];
+    const aMissing = isMissingValue(aValue);
+    const bMissing = isMissingValue(bValue);
+
+    if (aMissing && bMissing) return 0;
+    if (aMissing) return 1;
+    if (bMissing) return -1;
+
+    return ascending
+        ? toNumber(aValue) - toNumber(bValue)
+        : toNumber(bValue) - toNumber(aValue);
+}
+
+function normalizeText(text) {
+    return String(text)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ł/g, 'l')
+        .replace(/Ł/g, 'l');
+}
+
+function translatePosition(position) {
+    return POSITION_TRANSLATIONS[position] || position || '-';
+}
+
+function formatHeight(height) {
+    if (!height || height === '-') return '-';
+    return String(height).includes('cm') ? height : `${height} cm`;
+}
+
+function formatWeight(weight) {
+    if (!weight || weight === '-') return '-';
+    return String(weight).includes('kg') ? weight : `${weight} kg`;
+}
+
+function getAllPlayers() {
+    return [...players, ...apiPlayers, ...favorites];
+}
+
+function setLoader(isVisible) {
+    elements.loader.classList.toggle('hidden', !isVisible);
+}
+
+// ======================================
+// Widoki i nawigacja
+// ======================================
+
+function changeView(viewName) {
+    elements.views.forEach(view => view.classList.remove('active'));
+
+    const targetView = document.getElementById(`view-${viewName}`);
+    if (targetView) targetView.classList.add('active');
+
+    elements.navLinks.forEach(link => {
+        link.classList.toggle('active', link.dataset.view === viewName);
+    });
+
+    elements.nav.classList.remove('open');
+    elements.hamburger.classList.remove('open');
+}
+
+function handleViewChange(event) {
+    const viewName = event.currentTarget.dataset.view;
+
+    if (!viewName) return;
+
+    event.preventDefault();
+    changeView(viewName);
+}
+
+// ======================================
+// Renderowanie zawodników
 // ======================================
 
 function renderPlayers(playersToShow) {
-
-    // czyścimy listę
-    playersList.innerHTML = "";
-
-    // dodajemy nagłówek tabeli
-    playersList.innerHTML += `
+    elements.playersList.innerHTML = `
         <div class="player-row header">
             <div>Zawodnik</div>
             <div>Klub</div>
             <div>Pozycja</div>
             <div>Wiek</div>
-            <div>Wartość</div>
+            <div>Mecze</div>
+            <div>Gole</div>
             <div>Akcja</div>
         </div>
     `;
 
-    // pętla po zawodnikach
     playersToShow.forEach(player => {
+        const isFavorite = favorites.some(favorite => favorite.id === player.id);
 
-        playersList.innerHTML += `
+        elements.playersList.innerHTML += `
             <div class="player-row">
-
                 <div class="player-name">
+                    <span class="star ${isFavorite ? 'active' : ''}" data-id="${player.id}">
+                        ${isFavorite ? '★' : '☆'}
+                    </span>
                     ${player.name}
                 </div>
 
-                <div class="player-club">
-                    ${player.club}
-                </div>
+                <div class="player-club">${player.club}</div>
+                <div>${translatePosition(player.position)}</div>
+                <div>${player.age ?? '-'}</div>
+                <div>${player.matches}</div>
+                <div>${player.goals}</div>
 
                 <div>
-                    ${player.position}
+                    <button class="details-link" data-id="${player.id}">Szczegóły</button>
                 </div>
-
-                <div>
-                    ${player.age}
-                </div>
-
-                <div class="player-value">
-                    ${player.valueToShow}
-                </div>
-
-                <div>
-                    <button 
-                        class="details-link"
-                        onclick="showPlayerDetails(${player.id})"
-                    >
-                        Szczegóły
-                    </button>
-                </div>
-
             </div>
         `;
     });
 
-    // pokazujemy ilość wyników
-    resultsInfo.textContent =
-        "Znaleziono zawodników: " + playersToShow.length;
+    elements.resultsInfo.textContent = playersToShow.length === 0
+        ? 'Brak wyników'
+        : `Znaleziono zawodników: ${playersToShow.length}`;
 }
 
-// ======================================
-// SZCZEGÓŁY ZAWODNIKA
-// ======================================
+function renderPlayerDetails(playerId) {
+    const player = getAllPlayers().find(item => item.id === playerId);
 
-function showPlayerDetails(playerId) {
+    if (!player) return;
 
-    // szukamy zawodnika w aktualnej liście
-    // czyli albo w lokalnych danych, albo w danych z API
-    const player = currentPlayers.find(function(player) {
-        return player.id === playerId;
-    });
-
-    if (!player) {
-        return;
-    }
-
-    const detailCard = document.getElementById("detail-card");
-
-    detailCard.innerHTML = `
+    elements.detailCard.innerHTML = `
         <div class="detail-header">
             <div class="detail-photo">
                 <img src="${player.image}" alt="${player.name}">
@@ -115,10 +216,12 @@ function showPlayerDetails(playerId) {
 
             <div class="detail-info">
                 <h2>${player.name}</h2>
-                <p><strong>Pozycja:</strong> ${player.position}</p>
-                <p><strong>Wiek:</strong> ${player.age}</p>
+                <p><strong>Pozycja:</strong> ${translatePosition(player.position)}</p>
+                <p><strong>Wiek:</strong> ${player.age ?? '-'}</p>
                 <p><strong>Klub:</strong> ${player.club}</p>
-                <p><strong>Wartość rynkowa:</strong> ${player.valueToShow}</p>
+                <p><strong>Narodowość:</strong> ${player.nationality || '-'}</p>
+                <p><strong>Wzrost:</strong> ${formatHeight(player.height)}</p>
+                <p><strong>Waga:</strong> ${formatWeight(player.weight)}</p>
             </div>
         </div>
 
@@ -149,220 +252,258 @@ function showPlayerDetails(playerId) {
         </div>
     `;
 
-    changeView("detail");
+    changeView('detail');
+}
+
+function renderFavorites() {
+    elements.favoritesGrid.innerHTML = '';
+
+    if (favorites.length === 0) {
+        elements.favEmpty.style.visibility = 'visible';
+        return;
+    }
+
+    elements.favEmpty.style.visibility = 'hidden';
+
+    favorites.forEach(player => {
+        elements.favoritesGrid.innerHTML += `
+            <div class="detail-card">
+                <h3>${player.name}</h3>
+                <p>${player.club}</p>
+                <button class="details-link" data-id="${player.id}">Szczegóły</button>
+                <button class="fav-btn active" data-id="${player.id}">Usuń</button>
+            </div>
+        `;
+    });
+}
+
+function renderPopular() {
+    elements.popularGrid.innerHTML = '';
+
+    players.slice(0, 3).forEach(player => {
+        elements.popularGrid.innerHTML += `
+            <div class="detail-card">
+                <img src="${player.image}" width="120" alt="${player.name}">
+                <h3>${player.name}</h3>
+                <p>Wiek: ${player.age}</p>
+            </div>
+        `;
+    });
 }
 
 // ======================================
-// FILTROWANIE I SORTOWANIE
+// Ulubieni
+// ======================================
+
+function toggleFavorite(playerId) {
+    const player = getAllPlayers().find(item => item.id === playerId);
+
+    if (!player) return;
+
+    const isFavorite = favorites.some(item => item.id === playerId);
+
+    favorites = isFavorite
+        ? favorites.filter(item => item.id !== playerId)
+        : [...favorites, player];
+
+    saveFavorites();
+    updateFavCount();
+    renderFavorites();
+    renderPlayers(currentPlayers);
+}
+
+// ======================================
+// Filtrowanie i sortowanie
 // ======================================
 
 function filterPlayers() {
+    const searchText = normalizeText(elements.searchInput.value);
+    const selectedPosition = elements.positionFilter.value;
+    const sortType = elements.sortSelect.value;
 
-    // kopiujemy tablicę players
     let filteredPlayers = [...currentPlayers];
 
-    // ======================================
-    // WYSZUKIWANIE
-    // ======================================
+    if (searchText) {
+        filteredPlayers = filteredPlayers.filter(player => {
+            const playerName = normalizeText(player.name);
+            const playerClub = normalizeText(player.club);
 
-    const searchText =
-        searchInput.value.toLowerCase();
-
-    if (searchText !== "") {
-
-        filteredPlayers =
-            filteredPlayers.filter(function(player) {
-
-                return (
-                    player.name.toLowerCase().includes(searchText) ||
-                    player.club.toLowerCase().includes(searchText)
-                );
-            });
-    }
-
-    // ======================================
-    // FILTR PO POZYCJI
-    // ======================================
-
-    const selectedPosition = positionFilter.value;
-
-    if (selectedPosition !== "") {
-
-        filteredPlayers =
-            filteredPlayers.filter(function(player) {
-
-                return player.position === selectedPosition;
-            });
-    }
-
-    // ======================================
-    // SORTOWANIE
-    // ======================================
-
-    const sortType = sortSelect.value;
-
-    // sortowanie po nazwie A-Z
-    if (sortType === "name") {
-
-        filteredPlayers.sort(function(a, b) {
-            return a.name.localeCompare(b.name);
+            return playerName.includes(searchText) || playerClub.includes(searchText);
         });
     }
 
-    // sortowanie po nazwie Z-A
-    if (sortType === "name2") {
-
-        filteredPlayers.sort(function(a, b) {
-            return b.name.localeCompare(a.name);
-        });
+    if (selectedPosition) {
+        filteredPlayers = filteredPlayers.filter(player => player.position === selectedPosition);
     }
 
-    // sortowanie po wartości malejąco
-    if (sortType === "value") {
-
-        filteredPlayers.sort(function(a, b) {
-            return b.value - a.value;
-        });
-    }
-
-    // sortowanie po wartości rosnąco
-    if (sortType === "value2") {
-
-        filteredPlayers.sort(function(a, b) {
-            return a.value - b.value;
-        });
-    }
-
-    // sortowanie po wieku malejąco
-    if (sortType === "age") {
-
-        filteredPlayers.sort(function(a, b) {
-            return b.age - a.age;
-        });
-    }
-
-    // sortowanie po wieku rosnąco
-    if (sortType === "age2") {
-
-        filteredPlayers.sort(function(a, b) {
-            return a.age - b.age;
-        });
-    }
-
-    // pokazujemy wynik
+    sortPlayers(filteredPlayers, sortType);
     renderPlayers(filteredPlayers);
 }
 
-// ======================================
-// POBIERANIE ZAWODNIKÓW Z API
-// ======================================
+function sortPlayers(playersToSort, sortType) {
+    const sortOptions = {
+        name: (a, b) => a.name.localeCompare(b.name, 'pl'),
+        name2: (a, b) => b.name.localeCompare(a.name, 'pl'),
+        goals: (a, b) => compareNumbers(a, b, 'goals', false),
+        goals2: (a, b) => compareNumbers(a, b, 'goals', true),
+        matches: (a, b) => compareNumbers(a, b, 'matches', false),
+        matches2: (a, b) => compareNumbers(a, b, 'matches', true),
+        age: (a, b) => compareNumbers(a, b, 'age', false),
+        age2: (a, b) => compareNumbers(a, b, 'age', true)
+    };
 
-async function searchPlayersFromApi(searchText) {
-
-    const apiUrl =
-        "https://v3.football.api-sports.io/players/profiles?search=" +
-        encodeURIComponent(searchText);
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: "GET",
-            headers: {
-                "x-apisports-key": API_KEY
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error("Błąd API: " + response.status);
-        }
-
-        const data = await response.json();
-
-        console.log("Dane z API:", data);
-
-        const apiResults = data.response;
-
-        apiPlayers = apiResults.map(function(item, index) {
-
-            const player = item.player;
-
-            return {
-                id: index + 1000,
-                name: player.name || "Brak nazwy",
-                club: "Brak klubu",
-                position: "Brak pozycji",
-                age: player.age || "-",
-                value: 0,
-                valueToShow: "Brak danych",
-                image: player.photo || "",
-
-                matches: "-",
-                goals: "-",
-                assists: "-",
-                grade: "-"
-            };
-        });
-
-        currentPlayers = apiPlayers;
-        renderPlayers(currentPlayers);
-
-    } catch (error) {
-        console.log("Nie udało się pobrać danych z API:", error);
-
-        alert("Nie udało się pobrać danych z API.");
+    if (sortOptions[sortType]) {
+        playersToSort.sort(sortOptions[sortType]);
     }
 }
 
 // ======================================
-// EVENT LISTENERS
+// API-Football
 // ======================================
 
-// wpisywanie w wyszukiwarkę
-searchInput.addEventListener("input", filterPlayers);
+function buildApiUrl(searchText) {
+    const normalizedSearchText = normalizeText(searchText);
+    const leagueId = elements.heroLeagueSelect.value;
 
-// zmiana selecta pozycji
-positionFilter.addEventListener("change", filterPlayers);
+    return 'https://v3.football.api-sports.io/players?search=' +
+        encodeURIComponent(normalizedSearchText) +
+        '&league=' + leagueId +
+        '&season=' + API_SEASON;
+}
 
-// zmiana sortowania
-sortSelect.addEventListener("change", filterPlayers);
+function mapApiPlayer(item) {
+    const player = item.player;
+    const stats = item.statistics?.[0];
 
-// przycisk "Szukaj" na stronie głównej
-const heroSearchButton = document.getElementById("hero-search-btn");
+    return {
+        id: player.id,
+        name: player.name || 'Brak nazwy',
+        nationality: player.nationality || '-',
+        height: player.height || '-',
+        weight: player.weight || '-',
+        club: stats?.team?.name || 'Brak klubu',
+        position: stats?.games?.position || 'Brak pozycji',
+        age: player.age ? Number(player.age) : null,
+        image: player.photo || '',
+        matches: showValue(stats?.games?.appearences),
+        goals: showValue(stats?.goals?.total),
+        assists: showValue(stats?.goals?.assists),
+        grade: stats?.games?.rating ? parseFloat(stats.games.rating).toFixed(2) : '-'
+    };
+}
 
-// input na stronie głównej
-const heroSearchInput = document.getElementById("hero-search");
+async function searchPlayersFromApi(searchText) {
+    setLoader(true);
 
-heroSearchButton.addEventListener("click", function() {
+    try {
+        const response = await fetch(buildApiUrl(searchText), {
+            method: 'GET',
+            headers: {
+                'x-apisports-key': API_KEY
+            }
+        });
 
-    const searchText = heroSearchInput.value.trim();
+        const data = await response.json();
 
-    if (searchText === "") {
-        alert("Wpisz nazwisko zawodnika");
+        if (!response.ok) {
+            throw new Error(`Błąd API: ${response.status}`);
+        }
+
+        if (data.errors && Object.keys(data.errors).length > 0) {
+            throw new Error(JSON.stringify(data.errors));
+        }
+
+        if (!data.response || data.response.length === 0) {
+            apiPlayers = [];
+            currentPlayers = [];
+            renderPlayers([]);
+            elements.resultsInfo.textContent = `Brak wyników z API dla: ${searchText}`;
+            return;
+        }
+
+        apiPlayers = data.response.map(mapApiPlayer);
+        currentPlayers = apiPlayers;
+        renderPlayers(currentPlayers);
+    } catch (error) {
+        console.error('Nie udało się pobrać danych z API:', error);
+        alert('Nie udało się pobrać danych z API.');
+    } finally {
+        setLoader(false);
+    }
+}
+
+// ======================================
+// Obsługa zdarzeń
+// ======================================
+
+function handleHeroSearch() {
+    const searchText = elements.heroSearchInput.value.trim();
+
+    if (!searchText) {
+        alert('Wpisz nazwisko zawodnika');
         return;
     }
 
     searchPlayersFromApi(searchText);
-    changeView("players");
-});
+    changeView('players');
+}
 
-heroSearchInput.addEventListener("keydown", function(event) {
+function handlePlayersListClick(event) {
+    const id = Number(event.target.dataset.id);
 
-    if (event.key === "Enter") {
-
-        const searchText = heroSearchInput.value.trim();
-
-        if (searchText === "") {
-            alert("Wpisz nazwisko zawodnika");
-            return;
-        }
-
-        searchPlayersFromApi(searchText);
-        changeView("players");
+    if (event.target.classList.contains('details-link')) {
+        renderPlayerDetails(id);
     }
-});
+
+    if (event.target.classList.contains('star')) {
+        toggleFavorite(id);
+    }
+}
+
+function handleFavoritesClick(event) {
+    const id = Number(event.target.dataset.id);
+
+    if (event.target.classList.contains('details-link')) {
+        renderPlayerDetails(id);
+    }
+
+    if (event.target.classList.contains('fav-btn')) {
+        toggleFavorite(id);
+    }
+}
+
+function addEventListeners() {
+    elements.searchInput.addEventListener('input', filterPlayers);
+    elements.positionFilter.addEventListener('change', filterPlayers);
+    elements.sortSelect.addEventListener('change', filterPlayers);
+
+    elements.heroSearchButton.addEventListener('click', handleHeroSearch);
+    elements.heroSearchInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') handleHeroSearch();
+    });
+
+    elements.playersList.addEventListener('click', handlePlayersListClick);
+    elements.favoritesGrid.addEventListener('click', handleFavoritesClick);
+
+    elements.logo.addEventListener('click', handleViewChange);
+    elements.viewButtons.forEach(button => button.addEventListener('click', handleViewChange));
+
+    elements.hamburger.addEventListener('click', () => {
+        elements.nav.classList.toggle('open');
+        elements.hamburger.classList.toggle('open');
+    });
+}
 
 // ======================================
-// START
+// Start aplikacji
 // ======================================
 
-// po załadowaniu strony pokaż zawodników
-renderPlayers(players);
+function init() {
+    addEventListeners();
+    renderPlayers(players);
+    updateFavCount();
+    renderFavorites();
+    renderPopular();
+}
+
+init();
