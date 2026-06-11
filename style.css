@@ -158,6 +158,46 @@ button {
     .nav.open {
         display: flex;
     }
+    .players-list {
+        border: none;
+        display: grid;
+        gap: 1rem;
+    }
+
+    .player-row {
+        grid-template-columns: 1fr;
+        gap: 0.45rem;
+        border: 1px solid #30363d;
+        border-radius: 12px;
+        padding: 1rem;
+    }
+
+    .player-row.header {
+        display: none;
+    }
+
+    .player-row > div:not(.player-name):not(:last-child) {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: #e6edf3;
+    }
+
+    .player-row > div[data-label]::before {
+        content: attr(data-label) ": ";
+        color: #8b949e;
+        font-weight: 600;
+    }
+
+    .player-name {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .player-row .details-link {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
 }
 
 /* TABLET (768px+) */

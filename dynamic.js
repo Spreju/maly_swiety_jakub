@@ -178,18 +178,18 @@ function renderPlayers(playersToShow) {
 
         elements.playersList.innerHTML += `
             <div class="player-row">
-                <div class="player-name">
+                <div class="player-name" >
                     <span class="star ${isFavorite ? 'active' : ''}" data-id="${player.id}">
                         ${isFavorite ? '★' : '☆'}
                     </span>
                     ${player.name}
                 </div>
 
-                <div class="player-club">${player.club}</div>
-                <div>${translatePosition(player.position)}</div>
-                <div>${player.age ?? '-'}</div>
-                <div>${player.matches}</div>
-                <div>${player.goals}</div>
+                <div class="player-club" data-label="Klub">${player.club}</div>
+                <div data-label="Pozycja">${translatePosition(player.position)}</div>
+                <div data-label="Wiek">${player.age ?? '-'}</div>
+                <div data-label="Mecze">${player.matches}</div>
+                <div data-label="Gole">${player.goals}</div>
 
                 <div>
                     <button class="details-link" data-id="${player.id}">Szczegóły</button>
