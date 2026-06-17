@@ -4,7 +4,7 @@
 // Konfiguracja aplikacji
 // ======================================
 
-const API_KEY = '54f7ebf2d5b93c24ba949c932130a794';
+const API_KEY = '94003a8dddb9409153b5e4ad434a5164';
 const API_SEASON = 2024;
 const STORAGE_KEY = 'favorites';
 
