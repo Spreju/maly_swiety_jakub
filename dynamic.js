@@ -443,6 +443,11 @@ function handleHeroSearch() {
         alert('Wpisz nazwisko zawodnika');
         return;
     }
+    
+    if (!/^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s-]{2,}$/.test(searchText)) {
+        alert('Wpisz poprawne nazwisko zawodnika');
+        return;
+    }
 
     searchPlayersFromApi(searchText);
     changeView('players');
