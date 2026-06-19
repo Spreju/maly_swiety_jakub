@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SportDB</title>
+        <meta charset="UTF-8">  
+        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="nawigacja">
+            <div id="calanawigacja">
+                <div>
+                    <a href="index.html"> Strona główna</a>
+                </div>
+                <div>
+                    <a href="formularz.html" class="aktywna">Wyszukaj sportowca</a>
+                </div>
+                <div>
+                    <a href="zawodnicy.html">Sportowcy</a>
+                </div>
+            </div>
+            <button id="menu">Rozwiń</button>
+        </div>
+        <main class="zawartosc">
+            <h1>Wyszukaj zawodnika</h1>
+            <div class="formularz">
+                <form>
+                    <div>
+                        <input id="szukajzawodnik" type="text" placeholder="Podaj zawodnika...">
+                        <button type="submit" id="zawodnik">Wyszukaj</button>
+                    </div>
+                </form>
+            </div>
+            <p id="blad"></p>
+        </main>
+        <script src="script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SportDB</title>
+        <meta charset="UTF-8">  
+        <link rel="stylesheet" href="style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="nawigacja">
+            <div id="calanawigacja">
+                <div>
+                    <a href="index.html" class="aktywna"> Strona główna</a>
+                </div>
+                <div>
+                    <a href="formularz.html">Wyszukaj sportowca</a>
+                </div>
+                <div>
+                    <a href="zawodnicy.html">Sportowcy</a>
+                </div>
+            </div>
+            <button id="menu">Rozwiń</button>
+        </div>
+        <main class="zawartosc">
+            <h1> Kto jest najlepszy?</h1>
+            <div class="wybory">
+                <div class="wybor">
+                    <img alt="Ronaldo" src="https://img.a.transfermarkt.technology/portrait/big/8198-1748102259.jpg?lm=1">
+                    <button type="button" id="opcja1">SIUUUUUU</button>
+                 </div>
+                <div class="wybor">
+                    <img alt="Messi" src="https://img.a.transfermarkt.technology/portrait/big/28003-1771694720.jpg?lm=1">
+                    <button type="button" id="opcja2">Balon dor</button>
+                </div>
+                <div class="wybor">
+                    <img alt="Haaland" src="https://img.a.transfermarkt.technology/portrait/big/418560-1709108116.png?lm=1">
+                    <button type="button" id="opcja3">Hochland</button>
+                </div>
+                <div class="wybor">
+                    <img id="dyktator" alt="Mbappe" src="https://img.a.transfermarkt.technology/portrait/big/342229-1682683695.jpg?lm=1">
+                    <button type="button" id="opcja4">Dyktator</button>
+                </div>
+            </div>
+            <div id="audio">
+
+            </div>
+        </main>
+        <script src="script.js"></script>
+        <script>
+            const przycisk1 = document.querySelector("#opcja1");
+            const przycisk2 = document.querySelector("#opcja2");
+            const przycisk3 = document.querySelector("#opcja3");
+            const przycisk4 = document.querySelector("#opcja4");
+            const audio = document.querySelector("#audio");
+            
+            przycisk1.addEventListener("click", function() {
+                audio.innerHTML = `
+                    <audio controls>
+                        <source src="assets/ronaldo.mp3">
+                    </audio>
+                `;
+            });
+            przycisk2.addEventListener("click", function() {
+                audio.innerHTML = `
+                    <audio controls>
+                        <source src="assets/messi.mp3">
+                    </audio>
+                `;
+            });
+            przycisk3.addEventListener("click", function() {
+                audio.innerHTML = `
+                    <audio controls>
+                        <source src="assets/haaland.mp3">
+                    </audio>
+                `;
+            });
+            przycisk4.addEventListener("click", function() {
+                audio.innerHTML = `
+                    <audio controls id="easteregg">
+                        <source src="assets/mbappe.mp3">
+                    </audio>
+                `;
+
+                const jajkoniespodzianka = document.querySelector("#easteregg");
+                const podmianka = document.querySelector("#dyktator");
+
+                jajkoniespodzianka.addEventListener("play", function() {
+                    podmianka.src = "https://preview.redd.it/petition-to-add-dictator-mbappe-flair-to-the-sub-v0-pmylyjgqzvsg1.jpeg?auto=webp&s=a5675a5a7f60b5da6f440080cc0e58e73f8ab940";
+                });
+            });
+        </script>
+    </body>
+</html>

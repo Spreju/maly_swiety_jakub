@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(228, 255, 211);
+    min-height: 100vh;
+    width: 100%;
+}
+
+.nawigacja {
+    position: sticky;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    height: 75px;
+    width: 100%;
+    border-bottom: 2px solid rgb(2, 97, 2);
+    background-color: rgb(10, 10, 10);
+}
+
+.nawigacja div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nawigacja div div {
+    margin: 8px;
+}
+
+.nawigacja div a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.nawigacja button {
+    color: rgb(255, 255, 255);
+    display: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    top: 10px;
+    right: 10px;
+    position: absolute;
+}
+
+.zawartosc {
+    width: 100%;
+    max-width: 1100px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.zawartosc h1 {
+    margin: 10px auto;
+}
+
+.zawartosc .wybory {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 80px;
+    flex-wrap: wrap;
+}
+
+.zawartosc .wybory .wybor {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.zawartosc .wybory .wybor img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+.zawartosc .wybory .wybor button {
+    cursor: pointer;
+    padding: 5px;
+    width: 100%;
+    font-size: 1rem;
+    color: rgb(255, 255, 255);
+    background-color: rgb(10, 10, 10);
+}
+
+.zawartosc .formularz form{
+    display: flex;
+    max-width: 350px;
+    justify-content: center;
+    margin: 1rem auto;
+    width: 100%;
+    gap: 5px;
+}
+
+.zawartosc .formularz form div{
+    display: flex;
+}
+
+.zawartosc .formularz label { 
+    margin: 5px;
+}
+
+.zawartosc .formularz input {
+    min-width: 150px;
+    width: 100%;
+    font-size: 1.25rem;
+    border: 1px solid rgb(128, 128, 128);
+    padding: 3px;
+    background-color: rgb(240, 255, 252);
+}
+
+.zawartosc .formularz button {
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 1rem;
+    padding: 3px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(10, 10, 10);
+} 
+
+.aktywna {
+    font-weight: 550;
+}
+
+.zawodnik {
+    background-color: white;
+    border: 1px solid gray;
+    padding: 15px;
+    margin: 10px;
+    width: 330px;
+}
+
+.zawodnik .zdjecie {
+    height: 100px;
+    width: 100px;
+    float: left;
+    margin-right: 15px;
+}
+
+.zawodnik .zdjecie img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.zawodnik .dane {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.zawodnik h2 {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .nawigacja {
+        height: auto;
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+    }
+
+    .nawigacja button {
+        display: block;
+    }
+
+    #calanawigacja {
+        display: none;
+        flex-direction: column;
+    }
+
+    #calanawigacja div a {
+        font-size: 1.25rem;
+    }
+
+    .zawartosc .wybory .wybor {
+        width: 40%;
+    }
+}
+
+@media (max-width: 480px) {
+    .zawartosc .wybory .wybor {
+        width: 100%;
+    }
+}
